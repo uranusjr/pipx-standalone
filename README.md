@@ -16,16 +16,9 @@ scoop install pipx-64  # Or pipx-32 if you’re running 32-bit.
 
 ## This is highly experiemental!
 
-Currently most operations require you to pass the `--python` flag, since the
-standalone installation’s host Python (`sys.executable`) is not capable of
-creating a virtual environment.
-
 You need to install a “proper” Python distribution (I selfishly recommend my
-own [PythonUp] tool), and do something like:
-
-```
-pipx install --python=py [package-to-install]
-```
+own [PythonUp] tool). pipx is patched to use `py.exe` as default (instead of
+`sys.executable` which won’t work).
 
 [PythonUp]: https://github.com/uranusjr/pythonup-windows
 

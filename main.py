@@ -52,6 +52,49 @@ def retrieve_pipx(build_dir: pathlib.Path):
     )
 
 
+_DEFAULT_PYTHON_PATCH = """\
+def _find_default_python():
+    import shutil
+    py = shutil.which("py")
+    if py:
+        return py
+    python = shutil.which("python")
+    if "WindowsApps" not in python:
+        return python
+    # Special treatment to detect Windows Store stub.
+    import subprocess
+    proc = subprocess.run([python, "-V"], stdout=subprocess.PIPE)
+    if proc.returncode != 0:
+        raise EnvironmentError("no available Python found")
+    if not proc.stdout.strip():
+        # Windows Store stub sliently returns nothing.
+        raise EnvironmentError("no available Python found")
+    return python  # This executable seems to work.
+
+DEFAULT_PYTHON = _find_default_python()
+"""
+
+
+def _patch_constants_py(path: pathlib.Path):
+    with path.open("r", encoding="utf-8") as f:
+        lines = f.readlines()
+        newline = f.newlines
+
+    if not isinstance(newline, str):
+        newline = "\n"
+
+    with path.open("w", encoding="utf-8", newline=newline) as f:
+        for line in lines:
+            if line.startswith("DEFAULT_PYTHON = "):
+                f.write(_DEFAULT_PYTHON_PATCH)
+            else:
+                f.write(line)
+
+
+def patch_pipx(build_dir: pathlib.Path):
+    _patch_constants_py(build_dir.joinpath("pipx", "constants.py"))
+
+
 def create_archive(source: pathlib.Path, target: pathlib.Path):
     with zipfile.ZipFile(target, "w") as zf:
         for dirpath, _, filenames in os.walk(source):
@@ -106,11 +149,18 @@ def main(argv=None):
     if target.exists():
         raise FileExistsError(target)
 
+    print(f"Downloading {PYTHON_EMBED_URLS[ns.variant]}")
     retrieve_python(PYTHON_EMBED_URLS[ns.variant], ns.build, build_dir)
-    retrieve_pipx(build_dir)
-    create_archive(build_dir, target)
 
-    print(f"Created: {target}")
+    # pip would emit output so we don't.
+    retrieve_pipx(build_dir)
+
+    print(f"Patching {build_dir.joinpath('pipx')}")
+    patch_pipx(build_dir)
+
+    print("Creating archive...", end=" ", flush=True)
+    create_archive(build_dir, target)
+    print(f"Done: {target}")
 
 
 if __name__ == "__main__":
