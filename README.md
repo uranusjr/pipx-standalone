@@ -28,3 +28,18 @@ pipx install --python=py [package-to-install]
 ```
 
 [PythonUp]: https://github.com/uranusjr/pythonup-windows
+
+
+## Release
+
+Documentation for future self.
+
+Update pipx version (and build number) in `main.py`.
+
+```
+py main.py --variant amd64
+py main.py --variant win32
+```
+
+[Create a release](https://github.com/uranusjr/pipx-standalone/releases/new)
+and upload the generated zip files.
