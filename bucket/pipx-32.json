@@ -1,6 +1,5 @@
 {
     "version": "0.15.1.3",
     "url": "https://github.com/uranusjr/pipx-standalone/releases/download/0.15.1.3/pipx-standalone-win32-0.15.1.3.zip",
-    "bin": [["python.exe", "pipx", "-m", "pipx"]],
-    "suggest": {"Default": ["python"]}
+    "bin": [["python.exe", "pipx", "-m", "pipx"]]
 }
