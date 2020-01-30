@@ -8,19 +8,24 @@ import urllib.request
 import zipfile
 
 
-PYTHON_EMBED_URL = (
-    "https://www.python.org/ftp/python/3.8.1/python-3.8.1-embed-amd64.zip"
-)
+PYTHON_EMBED_URLS = {
+    "win32": (
+        "https://www.python.org/ftp/python/3.8.1/python-3.8.1-embed-win32.zip"
+    ),
+    "amd64": (
+        "https://www.python.org/ftp/python/3.8.1/python-3.8.1-embed-amd64.zip"
+    ),
+}
 
 PIPX_VERSION = "0.15.1.3"
 
 BUILD_VERSION = None
 
 
-def retrieve_python(dl_dir: pathlib.Path, build_dir: pathlib.Path):
-    archive = dl_dir.joinpath(PYTHON_EMBED_URL.rsplit("/", 1)[-1])
+def retrieve_python(url: str, dl_dir: pathlib.Path, build_dir: pathlib.Path):
+    archive = dl_dir.joinpath(url.rsplit("/", 1)[-1])
     if not archive.exists():
-        urllib.request.urlretrieve(PYTHON_EMBED_URL, archive)
+        urllib.request.urlretrieve(url, archive)
     with zipfile.ZipFile(archive) as zf:
         zf.extractall(build_dir)
 
@@ -76,12 +81,16 @@ def main(argv=None):
         type=pathlib.Path,
         default=pathlib.Path(__file__).resolve().with_name("dist"),
     )
+    parser.add_argument(
+        "--variant",
+        choices=sorted(PYTHON_EMBED_URLS.keys()),
+        required=True,
+    )
     ns = parser.parse_args(argv)
 
+    dist_name = f"pipx-standalone-{ns.variant}-{PIPX_VERSION}"
     if BUILD_VERSION:
-        dist_name = f"pipx-standalone-amd64-{PIPX_VERSION}-{BUILD_VERSION}"
-    else:
-        dist_name = f"pipx-standalone-amd64-{PIPX_VERSION}"
+        dist_name += f"-{BUILD_VERSION}"
 
     build_dir = ns.build.joinpath(dist_name)
     if build_dir.exists():
@@ -97,7 +106,7 @@ def main(argv=None):
     if target.exists():
         raise FileExistsError(target)
 
-    retrieve_python(ns.build, build_dir)
+    retrieve_python(PYTHON_EMBED_URLS[ns.variant], ns.build, build_dir)
     retrieve_pipx(build_dir)
     create_archive(build_dir, target)
 
