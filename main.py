@@ -79,9 +79,9 @@ def main(argv=None):
     ns = parser.parse_args(argv)
 
     if BUILD_VERSION:
-        dist_name = f"pipx-standalone-{PIPX_VERSION}-{BUILD_VERSION}"
+        dist_name = f"pipx-standalone-amd64-{PIPX_VERSION}-{BUILD_VERSION}"
     else:
-        dist_name = f"pipx-standalone-{PIPX_VERSION}"
+        dist_name = f"pipx-standalone-amd64-{PIPX_VERSION}"
 
     build_dir = ns.build.joinpath(dist_name)
     if build_dir.exists():
