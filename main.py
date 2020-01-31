@@ -62,12 +62,16 @@ def _find_default_python():
     if "WindowsApps" not in python:
         return python
     # Special treatment to detect Windows Store stub.
+    # https://twitter.com/zooba/status/1212454929379581952
     import subprocess
-    proc = subprocess.run([python, "-V"], stdout=subprocess.PIPE)
+    proc = subprocess.run(
+        [python, "-V"], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+    )
     if proc.returncode != 0:
+        # Cover the 9009 return code pre-emptively.
         raise EnvironmentError("no available Python found")
     if not proc.stdout.strip():
-        # Windows Store stub sliently returns nothing.
+        # A real Python should print version, Windows Store stub won't.
         raise EnvironmentError("no available Python found")
     return python  # This executable seems to work.
 
