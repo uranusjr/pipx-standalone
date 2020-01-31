@@ -8,7 +8,7 @@ See respective documentation to get an idea what [pipx] and [Scoop] are.
 
 ## Usage
 
-```
+```bash
 scoop bucket add pipx https://github.com/uranusjr/pipx-standalone.git
 scoop install pipx-64  # Or pipx-32 if you’re running 32-bit.
 ```
