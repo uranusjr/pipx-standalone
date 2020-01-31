@@ -8,18 +8,21 @@ import urllib.request
 import zipfile
 
 
-PYTHON_EMBED_URLS = {
-    "win32": (
-        "https://www.python.org/ftp/python/3.8.1/python-3.8.1-embed-win32.zip"
-    ),
-    "amd64": (
-        "https://www.python.org/ftp/python/3.8.1/python-3.8.1-embed-amd64.zip"
-    ),
-}
-
 PIPX_VERSION = "0.15.1.3"
 
-BUILD_VERSION = None
+# Used to release manifest bug fixes without incrementing pipx version.
+MANIFEST_BUILD_NUMBER = 0
+
+PYTHON_EMBED_VERSION = "3.8.1"
+
+PYTHON_EMBED_URL_TEMPLATE = (
+    "https://www.python.org/ftp/python/{0}/python-{0}-embed-{1}.zip"
+)
+
+PYTHON_EMBED_URLS = {
+    variant: PYTHON_EMBED_URL_TEMPLATE.format(PYTHON_EMBED_VERSION, variant)
+    for variant in ["amd64", "win32"]
+}
 
 
 def retrieve_python(url: str, dl_dir: pathlib.Path, build_dir: pathlib.Path):
@@ -128,43 +131,46 @@ def main(argv=None):
         type=pathlib.Path,
         default=pathlib.Path(__file__).resolve().with_name("dist"),
     )
-    parser.add_argument(
-        "--variant",
-        choices=sorted(PYTHON_EMBED_URLS.keys()),
-        required=True,
-    )
     ns = parser.parse_args(argv)
 
-    dist_name = f"pipx-standalone-{ns.variant}-{PIPX_VERSION}"
-    if BUILD_VERSION:
-        dist_name += f"-{BUILD_VERSION}"
+    artifacts = []
+    for variant, url in PYTHON_EMBED_URLS.items():
+        dist_name = f"pipx-standalone-{variant}-{PIPX_VERSION}"
+        if MANIFEST_BUILD_NUMBER:
+            dist_name += f"+{MANIFEST_BUILD_NUMBER}"
 
-    build_dir = ns.build.joinpath(dist_name)
-    if build_dir.exists():
-        shutil.rmtree(build_dir)
-    build_dir.mkdir(parents=True)
+        build_dir = ns.build.joinpath(dist_name)
+        if build_dir.exists():
+            shutil.rmtree(build_dir)
+        build_dir.mkdir(parents=True)
 
-    dist_dir = ns.dist
-    dist_dir.mkdir(parents=True, exist_ok=True)
+        dist_dir = ns.dist
+        dist_dir.mkdir(parents=True, exist_ok=True)
 
-    print(f"Building into: {build_dir}")
+        print(f"Building into: {build_dir}")
 
-    target = dist_dir.joinpath(f"{build_dir.name}.zip")
-    if target.exists():
-        raise FileExistsError(target)
+        target = dist_dir.joinpath(f"{build_dir.name}.zip")
+        if target.exists():
+            raise FileExistsError(target)
 
-    print(f"Downloading {PYTHON_EMBED_URLS[ns.variant]}")
-    retrieve_python(PYTHON_EMBED_URLS[ns.variant], ns.build, build_dir)
+        print(f"Downloading {url}")
+        retrieve_python(url, ns.build, build_dir)
 
-    # pip would emit output so we don't.
-    retrieve_pipx(build_dir)
+        # pip would emit output so we don't.
+        retrieve_pipx(build_dir)
 
-    print(f"Patching {build_dir.joinpath('pipx')}")
-    patch_pipx(build_dir)
+        print(f"Patching {build_dir.joinpath('pipx')}")
+        patch_pipx(build_dir)
 
-    print("Creating archive...", end=" ", flush=True)
-    create_archive(build_dir, target)
-    print(f"Done: {target}")
+        print("Creating archive...", end=" ", flush=True)
+        create_archive(build_dir, target)
+        artifacts.append(target)
+        print("Done")
+
+    print("\nCreated:")
+    for artifact in artifacts:
+        print(f"    {artifact}")
+    print()
 
 
 if __name__ == "__main__":

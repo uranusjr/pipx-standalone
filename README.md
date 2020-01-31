@@ -27,12 +27,15 @@ own [PythonUp] tool). pipx is patched to use `py.exe` as default (instead of
 
 Documentation for future self.
 
-Update pipx version (and build number) in `main.py`.
+Update `PIPX_VERSION` or `MANIFEST_BUILD_NUMBER` in `main.py`.
 
-```
-py main.py --variant amd64
-py main.py --variant win32
-```
+(Optional: Update `PYTHON_EMBED_VERSION`.)
+
+Run `py main.py` to generate zip files.
 
 [Create a release](https://github.com/uranusjr/pipx-standalone/releases/new)
 and upload the generated zip files.
+
+Update version and URL in `bucket/*.json`.
+
+Push to master.
