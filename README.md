@@ -10,7 +10,7 @@ See respective documentation to get an idea what [pipx] and [Scoop] are.
 
 ```bash
 scoop bucket add pipx https://github.com/uranusjr/pipx-standalone.git
-scoop install pipx-64  # Or pipx-32 if you’re running 32-bit.
+scoop install pipx
 
 # Optional: Set environment variables where you want to put pipx stuff.
 # More: https://pipxproject.github.io/pipx/installation/
