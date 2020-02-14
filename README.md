@@ -21,9 +21,14 @@ pipx ensurepath  # Adds PIPX_BIN_DIR to PATH to expose executables as commands.
 
 ## This is highly experiemental!
 
-You need to install a “proper” Python distribution (I selfishly recommend my
-own [PythonUp] tool). pipx is patched to use `py.exe` as default (instead of
-`sys.executable` which won’t work).
+You need to install a “proper” Python distribution. I selfishly recommend my
+own [PythonUp] tool, but any installation is fine, including from
+[installers from python.org](https://www.python.org/downloads/),
+[Windows Store](https://www.microsoft.com/p/python-38/9mssztt1n39l),
+or Scoop (`scoop install python`).
+
+pipx is patched to use `py.exe` as default (instead of `sys.executable` which
+won’t work).
 
 [PythonUp]: https://github.com/uranusjr/pythonup-windows
 
