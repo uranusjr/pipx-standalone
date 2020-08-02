@@ -8,12 +8,12 @@ import urllib.request
 import zipfile
 
 
-PIPX_VERSION = "0.15.1.3"
+PIPX_VERSION = "0.15.4.0"
 
 # Used to release manifest bug fixes without incrementing pipx version.
 MANIFEST_BUILD_NUMBER = 0
 
-PYTHON_EMBED_VERSION = "3.8.1"
+PYTHON_EMBED_VERSION = "3.8.5"
 
 PYTHON_EMBED_URL_TEMPLATE = (
     "https://www.python.org/ftp/python/{0}/python-{0}-embed-{1}.zip"
