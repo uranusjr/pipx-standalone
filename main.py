@@ -13,7 +13,7 @@ PIPX_VERSION = "0.15.6.0"
 # Used to release manifest bug fixes without incrementing pipx version.
 MANIFEST_BUILD_NUMBER = 0
 
-PYTHON_EMBED_VERSION = "3.8.5"
+PYTHON_EMBED_VERSION = "3.9.1"
 
 PYTHON_EMBED_URL_TEMPLATE = (
     "https://www.python.org/ftp/python/{0}/python-{0}-embed-{1}.zip"
