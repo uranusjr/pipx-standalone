@@ -55,53 +55,6 @@ def retrieve_pipx(build_dir: pathlib.Path):
     )
 
 
-_DEFAULT_PYTHON_PATCH = """\
-def _find_default_python():
-    import shutil
-    py = shutil.which("py")
-    if py:
-        return py
-    python = shutil.which("python")
-    if "WindowsApps" not in python:
-        return python
-    # Special treatment to detect Windows Store stub.
-    # https://twitter.com/zooba/status/1212454929379581952
-    import subprocess
-    proc = subprocess.run(
-        [python, "-V"], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
-    )
-    if proc.returncode != 0:
-        # Cover the 9009 return code pre-emptively.
-        raise EnvironmentError("no available Python found")
-    if not proc.stdout.strip():
-        # A real Python should print version, Windows Store stub won't.
-        raise EnvironmentError("no available Python found")
-    return python  # This executable seems to work.
-
-DEFAULT_PYTHON = _find_default_python()
-"""
-
-
-def _patch_constants_py(path: pathlib.Path):
-    with path.open("r", encoding="utf-8") as f:
-        lines = f.readlines()
-        newline = f.newlines
-
-    if not isinstance(newline, str):
-        newline = "\n"
-
-    with path.open("w", encoding="utf-8", newline=newline) as f:
-        for line in lines:
-            if line.startswith("DEFAULT_PYTHON = "):
-                f.write(_DEFAULT_PYTHON_PATCH)
-            else:
-                f.write(line)
-
-
-def patch_pipx(build_dir: pathlib.Path):
-    _patch_constants_py(build_dir.joinpath("pipx", "constants.py"))
-
-
 def create_archive(source: pathlib.Path, target: pathlib.Path):
     with zipfile.ZipFile(target, "w") as zf:
         for dirpath, _, filenames in os.walk(source):
@@ -159,8 +112,8 @@ def main(argv=None):
         # pip would emit output so we don't.
         retrieve_pipx(build_dir)
 
-        print(f"Patching {build_dir.joinpath('pipx')}")
-        patch_pipx(build_dir)
+        # print(f"Patching {build_dir.joinpath('pipx')}")
+        # patch_pipx(build_dir)
 
         print("Creating archive...", end=" ", flush=True)
         create_archive(build_dir, target)
