@@ -27,9 +27,6 @@ own [PythonUp] tool, but any installation is fine, including from
 [Windows Store](https://www.microsoft.com/p/python-38/9mssztt1n39l),
 or Scoop (`scoop install python`).
 
-pipx is patched to use `py.exe` as default (instead of `sys.executable` which
-won’t work).
-
 [PythonUp]: https://github.com/uranusjr/pythonup-windows
 
 
