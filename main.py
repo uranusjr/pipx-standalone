@@ -38,6 +38,7 @@ def retrieve_pipx(build_dir: pathlib.Path):
     env.update({
         "PIP_REQUIRE_VIRTUALENV": "false",
         "PIP_DISABLE_PIP_VERSION_CHECK": "true",
+        "PIP_NO_WARN_SCRIPT_LOCATION": "false",
     })
     subprocess.run(
         [
@@ -46,7 +47,6 @@ def retrieve_pipx(build_dir: pathlib.Path):
             "pip",
             "install",
             f"pipx=={PIPX_VERSION}",
-            "setuptools",  # TODO: Remove this for pipx>0.15.1.3.
             "--target",
             os.fspath(build_dir),
         ],
