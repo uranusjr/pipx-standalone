@@ -1,11 +1,11 @@
 {
-    "version": "0.15.6.0",
+    "version": "0.16.3",
     "architecture": {
         "64bit": {
-            "url": "https://github.com/uranusjr/pipx-standalone/releases/download/0.15.6.0/pipx-standalone-amd64-0.15.6.0.zip"
+            "url": "https://github.com/uranusjr/pipx-standalone/releases/download/0.16.3/pipx-standalone-amd64-0.16.3.zip"
         },
         "32bit": {
-            "url": "https://github.com/uranusjr/pipx-standalone/releases/download/0.15.6.0/pipx-standalone-win32-0.15.6.0.zip"
+            "url": "https://github.com/uranusjr/pipx-standalone/releases/download/0.16.3/pipx-standalone-win32-0.16.3.zip"
         }
     },
     "bin": [["python.exe", "pipx", "-m", "pipx"]]
