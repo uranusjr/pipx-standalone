@@ -8,12 +8,12 @@ import urllib.request
 import zipfile
 
 
-PIPX_VERSION = "0.16.3"
+PIPX_VERSION = "1.0.0"
 
 # Used to release manifest bug fixes without incrementing pipx version.
 MANIFEST_BUILD_NUMBER = 0
 
-PYTHON_EMBED_VERSION = "3.9.5"
+PYTHON_EMBED_VERSION = "3.10.4"
 
 PYTHON_EMBED_URL_TEMPLATE = (
     "https://www.python.org/ftp/python/{0}/python-{0}-embed-{1}.zip"
@@ -111,9 +111,6 @@ def main(argv=None):
 
         # pip would emit output so we don't.
         retrieve_pipx(build_dir)
-
-        # print(f"Patching {build_dir.joinpath('pipx')}")
-        # patch_pipx(build_dir)
 
         print("Creating archive...", end=" ", flush=True)
         create_archive(build_dir, target)
