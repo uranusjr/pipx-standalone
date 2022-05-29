@@ -8,7 +8,7 @@ import urllib.request
 import zipfile
 
 
-PIPX_VERSION = "1.0.0"
+PIPX_VERSION = "1.1.0"
 
 # Used to release manifest bug fixes without incrementing pipx version.
 MANIFEST_BUILD_NUMBER = 0
